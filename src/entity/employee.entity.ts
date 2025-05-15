@@ -1,55 +1,45 @@
-// src/models/user.model.ts
-import {
-  Table,
-  Column,
-  Model,
-  DataType,
-  PrimaryKey,
-  AutoIncrement,
-  CreatedAt,
-  UpdatedAt,
-} from 'sequelize-typescript';
-import { EmployeeCreationAttributes, IAddEmployeeRequest } from '../models/employee.model';
+// src/entity/employee.entity.ts
+import { DataTypes, Model, Sequelize } from "sequelize";
 
-@Table({
-  tableName: 'employee',
-  timestamps: true,
-})
-export class Employee extends Model<EmployeeCreationAttributes, IAddEmployeeRequest>{
-  @PrimaryKey
-  @Column({
-  type: DataType.UUID,
-})
-  employee_id!: number;
+export class Employee extends Model {
+  public employee_id!: string;
+  public employee_name!: string;
+  public employee_email!: string;
+  public employee_mobile_number!: string;
+  public password!: string;
 
-  @Column(DataType.STRING)
-  employee_name!: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-    unique: true,
-  })
-  employee_email!: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-    unique: true,
-  })
-  employee_mobile_number!: string;
-
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
-  password!: string;
-
-  @CreatedAt
-  @Column({ field: 'created_at' })
-  createdAt!: Date;
-
-  @UpdatedAt
-  @Column({ field: 'updated_at' })
-  updatedAt!: Date;
+  public static async initEmployeeModel(sequelize: Sequelize) {
+    Employee.init(
+      {
+        employee_id: {
+          type: DataTypes.UUID,
+          defaultValue: DataTypes.UUIDV4,
+          primaryKey: true,
+        },
+        employee_name: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        employee_email: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          unique: true,
+        },
+        employee_mobile_number: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          unique: true,
+        },
+        password: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+      },
+      {
+        sequelize, // ✅ Ensure model is linked to sequelize instance
+        tableName: "employee",
+        timestamps: true,
+      }
+    );
+  }
 }

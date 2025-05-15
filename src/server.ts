@@ -1,10 +1,13 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
+import { ControllerFactory } from "./controllers/controller-factory.controller";
+import { InitService, sequelize } from "./db_connection";
+import { CreateTables } from "./entity/create_tables/create_tables";
 // import { ConnectionService } from "./db_connection";
 // import { ControllerFactory } from "./controllers/controller-factory.controller";
-import { sequelize } from "../src/db_connection.js";
-import { ControllerFactory } from "./controllers/controller-factory.controller.js";
+// import { sequelize } from "./db_connection";
+// import { ControllerFactory } from "./controllers/controller-factory.controller";
 
 const app = express();
 dotenv.config({ path: "./.env.dev" });
@@ -29,14 +32,10 @@ app.set("port", port);
 app.get("/ping", (req: Request, res: Response) => {
   res.status(200).send("Ping check success");
 });
-
+InitService.InitDb(app);
+CreateTables.InitTables();
 // new ConnectionService().CreateConnection(option).then(() => {
-  await sequelize.sync({ force: false }).then(() => {
-  new ControllerFactory().getControllers().forEach((controller) => {
-    app.use(controller.getRoutePath(), controller.getRouter());
-  });
-  app.listen(port, () => {
-    console.log("Server is listening on port ", port);
-    console.log("http://localhost:%d/ping", app.get("port"));
-  });
+app.listen(port, () => {
+  console.log("Server is listening on port ", port);
+  console.log("http://localhost:%d/ping", app.get("port"));
 });
