@@ -1,43 +1,44 @@
 // src/entity/employee.entity.ts
 import { DataTypes, Model, Sequelize } from "sequelize";
+import { AssetCategory } from "../models/asset_master.model";
 
-export class Employee extends Model {
-  public employee_id!: string;
-  public employee_name!: string;
-  public employee_email!: string;
-  public employee_mobile_number!: string;
-  public password!: string;
+export class AssetMaster extends Model {
+  public asset_master_id!: string;
+  public asset_category!: AssetCategory;
+  public asset_type!: string;
+  public description!: string;
+  public active!: boolean;
 
   public static async initEmployeeModel(sequelize: Sequelize) {
-    Employee.init(
+    AssetMaster.init(
       {
-        employee_id: {
+        asset_master_id: {
           type: DataTypes.UUID,
           defaultValue: DataTypes.UUIDV4,
           primaryKey: true,
         },
-        employee_name: {
-          type: DataTypes.STRING,
+        asset_category: {
+          type: DataTypes.ENUM,
           allowNull: false,
         },
-        employee_email: {
-          type: DataTypes.STRING,
-          allowNull: false,
-          unique: true,
-        },
-        employee_mobile_number: {
+        asset_type: {
           type: DataTypes.STRING,
           allowNull: false,
           unique: true,
         },
-        password: {
+        description: {
           type: DataTypes.STRING,
+          allowNull: true,
+        },
+        active: {
+          type: DataTypes.BOOLEAN,
+          defaultValue: "true",
           allowNull: false,
         },
       },
       {
         sequelize,
-        tableName: "employee",
+        tableName: "asset_master",
         timestamps: true,
       }
     );
